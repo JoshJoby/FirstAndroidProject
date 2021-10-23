@@ -1,0 +1,373 @@
+Animals App
+
+    create a new empty project
+    go to res -> values -> colors.xml
+
+	we set the color scheme of the app by adding tags :-
+	<color name="colorPrimary">095922</color>
+	<color name="colorPrimaryDark">002F11</color>
+	<color name="colorAccent">79119900</color>
+
+	now go to right click on layout and click new layout resource file
+	name is : animal_row
+	this opens a new .xml file called animal_row
+
+	go to design mode and search for cardView. Download dependencies if needed. 
+
+	Now go to the code, delete the constraint view and rewrite cardView in tags (autofill) 
+	set android:layout_width="match_parent"
+		android:layout_height="wrap_content", to set contraints.
+		
+	we add 
+	elevation (autofill) = "8dp", and
+	cornerRadius (autofill) = "5dp"									//will explain later
+	marginLeft (autofill) = "10dp" [for giving gap b/w top of screen and card]
+		
+		within cardView add tag LinearLayout. its used to add daughter views in an horizontal or a vertical manner. 
+
+		add android:layout_width="match_parent"
+			android:layout_height="match_parent", to set constraints.
+			
+		we add padding to the LinearLayout so that the child views are placed at a certain distance
+		from the left end of the card as,
+			android:padding = "10dp"
+		
+		we add android:orientation="horizontal", because in each card image and 
+		text are next to each other.
+	
+			now, within the LinearLayout, we add another cardView for holding the image
+				add android:layout_width="85dp"
+					android:layout_height="75dp", to set constraints.
+					
+				we add android:elevation="5dp", because the image is slightly
+				above the base of the card. 
+				
+				we add cornerRadius (autofill), so that we have a nice curvy edge 
+				to each image.
+				
+				within the cardView we add an imageView so as to place image in the card
+					set android:layout_width="match_parent"
+						android:layout_height="match_parent", to set constraints.
+						
+					add android:scaleType="centerCrop",		to remove white bars in the imageView.
+					
+					we add android:id="@+id/img_animal", to set id
+					we close the imageView tag
+				we close the cardView tag
+					
+				
+			within the LinearLayout, we add a textView for holding text
+				set android:layout_width="wrap_content"
+					android:layout_height="wrap_content", to set constraints.	
+
+				set id for textView as 
+					android:id = "@+id/txt_animal_name"
+	
+				we add a left margin by 
+					android:layout_height="wrap_content" = "95dp", so as to maintain distance b/w image and text.
+					
+				we add font family and text as 
+					android:fontfamily = "casual"
+					android:text = "Text"
+					
+				we add text style and font size as 
+					android:textStyle = "bold"
+					android:textSize = "22dp"
+					
+				we set color of text to be white, by
+					android:textColor = "white"  (autofill)
+					
+				we position the text to be at the center of the card by
+					android:layout_gravity = "center"
+				
+				now we close the textView tag.
+				
+				
+	now, we go to the activity_main.xml file, go to design and search for RecyclerView (download dependencies if needed) 
+	go to code and under constraintView tag we add accent color as 
+		android:background = "@color/colorAccent", thus giving a light green bg.
+	
+	we already have the default "hello world!" text in middle. We change the text to "Animals" and contraint it to top of screen
+	we add the system ui bar by clicking on the eye icon in design mode and selecting Show System UI
+
+	we change font style to Casual, font text to 25dp, text style to bold and close TextView tag.
+
+	now we add recyclerView by typing recycler(autofill) and setting layout_width to "match_parent" and layout_width to 0dp
+	then we constraint the recyclerView, bottom to the bottom of screen and top to the base of "Animals".
+
+	
+	we now create a new java class called AnimalsAdapter. 
+	we extend this class to RecyclerView.Adapter (autofill)  [error is shown, ignore until later]
+
+	inside this class we create a nested class for holding the row (the card), from which we can create object and use.
+	each card will be represnted by this object.
+	we name the nested class animalRowHolder, and we extend it to RecyclerView.ViewHolder (autofill)
+
+		an red underline indicating an error is shown underneath name animalRowHolder, which on hovering mentions that there isnt any 
+		constructor. So we create constructor by clicking the blue link "create constructor with super".
+		this creates a new constructor inside the nested class.
+
+		now, above constructor, we need to declare the textView and the imageView of the card.
+		we do so by
+			TextView txtanimalname;
+			ImageView imganimal; 
+		
+		red underline may appear, perform required solutions by clicking on the blue link (imports the required classes)
+		
+		now in the constructor, we initialize these views as 
+		
+			txtanimalname = itemView.findViewById(R.id.txt_animal_name);			//id of textView
+            imganimal = itemView.findViewById(R.id.img_animal);						//id of imageView
+		
+		we use itemView here (whereas normally itemView is omitted) because here findViewById does not exist, and
+		the view is passed as a parameter when object is created.
+		
+	
+	now, for the red underline in the name AnimalsAdapter, hover over the name and click the blue link to perform the
+	necessary actions to solve the error. In this case it implements 3 functions which are added to the code.
+	
+	names : onCreateViewHolder(), onBindViewHolder(), getItemCount()
+	these functions are called automatically when the android framework is created. 
+	
+	we now create a constructor of AnimalsAdapter class, for which we assign some parameters
+	
+	ArrayList <animal> animalData; 				[this will contain all the animal objects]
+				[we create animal class later]
+	Context context; 							[provides the context]
+	
+	now in the AnimalsAdapter constructor, we pass parameters as (ArrayList <animal> animalData, Context context)
+	and we initialize in constructor using 'this' keyword. 
+		this.animalData = animalData;
+		this.context = context;
+		
+		
+		
+	How recyclerView works :- 
+			when we have a list of cardViews and we scroll down, the cards above are deleted in order to preserve memory, and 
+			once we scroll back up, the cardViews below are deleted and the deleted cards above are now recycled back and placed.
+			
+	the cardViews are first created using the onCreateViewHolder method.
+	now, within onCreateViewHolder(), 
+		add line : View view = LayoutInflater.from(context).inflate(R.layout.animal_row, parent, false);
+		
+			here we are inflating each row/cardView, we add context so that android knows which context, animal_row is the 
+			.xml file that we created stroing the cardView, we specify parent where the row is kept and false is added so that
+			we can add new rows without the app crashing.
+		
+		then we return new animalRowHolder(view);				//this passes view to itemView
+		
+	the cardViews are then deleted and recycled using the onBindViewHolder method
+	now, within onBindViewHolder(), 
+		add line : holder.txtanimalname.setText() 
+	
+
+	we notice that txtanimalname is colored red, indicating error. 
+	to resolve this, in the first class definition
+	add <> after RecyclerView.ViewHolder and with the angular braces type animalRowHolder (autofill)
+	
+	now replace recyclerView.viewHolder with animalRowHolder (before onCreateViewHolder)
+	and now txtanimalname will be resolved.
+	
+	now, we create a new java class named animal.
+	within the class we define a String name;
+	and we define an image as int image; 
+	we use integers because we put images in the drawable folder, and java sees this as the integer value inside 
+	our app memory.
+	
+	we then create a constructor in the animal class with parameters (String name, int image) and use 'this' 
+	keyword to initialize the variables.
+	
+	now, going back to AnimalsAdapter class, we see that the ArrayList<animal> red color is gone, indicating that the 
+	error is resolved.
+	
+	now, within onBindViewHolder(), 
+		within setText(), type animalData.get(position).name
+	
+	this retrives the name from the row on click. 
+	to make a more professional look, we use getters and setters. 
+	
+	in the animal class, right click within the class and click generate. Select getters and setters, and select both 
+	variables name and image by holding shift and click on the variables. 
+	
+	the getters and setter functions are created, and now in AnimalsAdapter class, within onBindViewHolder()
+	the final line of code is :-
+	        holder.txtanimalname.setText(animalData.get(position).getName());
+			
+	now below this, add : holder.img_animal.setImageResource(animalData.get(position).getImage());
+	this sets the image after its retrieval.
+	
+	
+	now we create the arrayList in the main_activity java class.
+	declare RecyclerView recyclerView;
+	and ArrayList<animal> animals;
+	
+	in onCreate(), initialize recyclerView = findViewById(R.id.recycler_view)		//default id of recyclerView
+	and initialize animals = ArrayList<>();
+	
+	now, we have to add data to this arrayList
+	we do so with the line
+	        animals.add(new animal("Wolf", R.drawable.wolf));
+		where "wolf" is the text to be displayed on the screen 
+		and R.drawable.wolf is the path of the image that is stored in the drawable folder 
+		
+	thus, images are to be stored in the drawable folder. 
+	you can add more elements by copying and pasting the line and changing the name and path of image.
+	
+	now we have to create the adapter 
+		AnimalsAdapter animalsAdapter = new AnimalsAdapter(animals, this);
+	where, 'this' refers to the context and animals is the data (name and file path of image) of each animal stored in arrayList.
+	
+	then we set a layout manager, which is used when recycler view is scrolled horizontally or vertically
+	
+		recyclerView.setLayoutManager(new LinearLayoutManager(this));
+	where 'this' is the context.
+	
+	now finally, we have to add this adapter to the recyclerView. 
+		recyclerView.setAdapter(animalsAdapter);
+		
+		
+this will present a list of items along with their images.
+__________________________________________________________________________________________________________________________________
+	
+now, to handle clicks with the items, 
+	in AnimalsAdapter class, add an interface 
+
+	interfaces are like classes, but you cannot create objects of the interface, and you cannot initialize any value inside it.
+
+	in AnimalsAdapter class, declare an interface as
+		interface MyClickInterface{
+		
+			}
+			
+	within the interface, we add a function that will be implemented later on
+		void onItemClick(int positionOfTheAnimal);
+			
+			
+	now in the same class, we declare the interface as 
+		MyClickInterface myClickInterface;
+		
+	and then we initialize this interface in the AnimalsAdapter constructor by adding the interface declaration in the 
+	field and using 'this' keyword to initialize the value.
+	
+	
+	now we have to set a listener to our clicks, done 
+	in the constructor of the nested class, add
+
+		itemView.setOnClickListener(new View.OnClickListener)			[autofill]
+		
+	the onClick() function, call the function of the interface as
+		myClickInterface.onItemClick(getAdapterPosition());
+		
+	now, in the MainActivity class, implement the interface by adding the keyword implements and name of interface as
+	
+		public class MainActivity extends AppCompatActivity implements AnimalsAdapter.MyClickInteface{
+		
+	red lines appear under the myClickInterface part, on hovering we click on the blue link and overrides the required methods.
+	
+	and now, onItemClick() function is overriden to the MainActivity class
+	within this function, we make a Toast message that displays the name of animal clicked as
+	
+		Toast.makeText(this, "Clicked" + animals.get(positionOfTheAnimal).getName(), Toast.LENGTH_SHORT).show();
+		
+	in the declaration of animalsAdapter in onCreate(), we add another parameter, 'this'. 
+	
+	
+now when we click on the card, a toast message is displayed. Eg : "Clicked Tiger" etc.
+
+now, to open a page for description of the animal on click, 
+
+	create a new empty activity AnimalInfo,
+	open the newly created .xml file, 
+	
+	we will display two items, a circular image and a textbox for description. 
+
+	for the image, we add a cardView
+		set layout_height = "250dp"
+			layout_width = "250dp"
+			
+		set cornerRadius [autofill] to 125 dp so that we get a nice circular shape.
+		
+		constraint the CardView to the edges of the screen using design mode.
+		
+	now, for the textView, create another cardView
+		set layout_height = "250dp"
+			layout_width = "350dp"
+			
+		add marginTop  [autofill] = "10dp"
+			
+	using design mode, drag and drop the cardView below the circular cardView.
+	constraint the text cardView to the image cardView by dragging the constraint pointer from one cardView to adjacent side
+	of the other cardView, to centralise the text cardView
+	
+	now for the circular cardView, we add an imageView to hold the cardView. 
+		set layout_height = "match_parent"
+			layout_width = "match_parent"
+		
+		set id = android:id="@+id/imgCircled"
+			scaleType [autofill] = "centerCrop"
+			
+	for the text cardView, add a textView to hold text, 
+	
+		set layout_height = "match_parent"
+			layout_width = "match_parent"
+			
+		add padding  [autofill] = "10dp"
+		set textColor [autofill] to be white
+		set textAlignment [autofill] = "center"
+		
+	
+	set background color [autofill] outside cardViews to be color/colorAccent
+	and color of the textView to be color/colorPrimary
+	
+	add cardBackground to the card [autofill] and set it to "@android:color/transparent".
+	
+	
+	to pass the information from the home screen to the description screen,
+	in MainActivity class, in the onItemClick() method, 
+	add an intent as 
+		Intent intent = new Intent(this, AnimalInfo.class);
+	
+	this tells us that we want to go from the home screen to the description screen.
+	
+	we pass our image as 
+		intent.putExtra("image", animals.get(positionOfTheAnimal).getImage());
+		
+	we pass our text as, 
+		intent.putExtra("text", animals.get(positionOfTheAnimal).getName());
+		
+	and add startActivity(intent). This send the flow into the next screen.
+		
+	now in the newly created AnimalsInfo class ,
+	we declare an ImageView img and a TextView txt.
+	
+	in the onCreate() method, we initialize these using findViewById as passing their ids. 
+	
+	now, we recieve our intent as 
+		Intent intent = getIntent();
+		
+	we set our image as 
+		img.setImageResource(intent.getIntExtra("image", R.drawable.ic_launcher_foreground));
+			
+		where "image" is the key, and R.drawable.ic_launcher_foreground is the icon that is shown when the 
+		image is now found. 
+		
+	we set our text as, 	
+		txt.setText(intent.getStringExtra("name"));
+		
+		
+this will show us the image and the name of the animal in a new screen.
+
+__________________________________________________________________________________________________________________________________
+
+
+		
+		
+		
+	
+	
+	
+		
+			
+ 				
+	
+	
