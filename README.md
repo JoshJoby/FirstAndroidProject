@@ -26,14 +26,14 @@ Download the .zip file from GitHub and extract the compressed files.
 Using android studio, open the folder.
 
 
-STARTING THE BOT
+STARTING THE APP
 ----------------
 
 Using android studio, run the app via emulator or an external device.
 
 
 
-USING THE BOT
+USING THE APP
 -------------
 
 Once the app runs, you can click on any of the cards to view its description.
